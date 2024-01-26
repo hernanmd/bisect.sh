@@ -199,7 +199,7 @@ main () {
 	pharo_image_file="$pharo_image_directory"/"$pharo_image_name"
 
     # Lazy initialization of vmpath to "pharo" in the image directory if not set
-    if [ -z "$vmpath" ]; then
+    if [ -z "$pharo_vm_file" ]; then
 		pharo_vm_file="$pharo_image_directory/pharo"
     fi
 
