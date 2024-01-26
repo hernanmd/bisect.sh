@@ -114,21 +114,26 @@ combine_xml_files() {
 clean_artifacts(){
 	if [ $should_clean_artifacts == true ] ; then
 		find . -name '*.fuel' -exec rm \{\} +
+		clean_xml_files
 		rm -fv serialized_stack progress.log
     fi
 }
 
+clean_xml_files() {
+	find . -name '*.xml' ! -name "$combined_xml_file_name" -exec rm \{\} +
+}
+
 clean_old_runs() {
 	if [ "$should_clean_files" == true ]; then
-        find . -name '*.xml' ! -name "$combined_xml_file_name" -exec rm \{\} +
+		clean_xml_files
 		find . -name 'failures*txt' -exec rm \{\} +
 	fi
 }
 
 # Filter and write output files
 filter_failures() {
-	local raw_failures_file_name="failures-raw-$pharo_image_name.txt"
-	local grep_failures_file_name="failures-grep-$pharo_image_name.txt"
+	local raw_failures_file_name="failures-raw-$pharo_image_name-$current_datetime.txt"
+	local grep_failures_file_name="failures-grep-$pharo_image_name-$current_datetime.txt"
 
     # Filter failed tests and write output to text file
     xpath -e '/testsuites//failure/text()' "$combined_xml_file_name" > "$raw_failures_file_name"
@@ -205,6 +210,5 @@ main () {
     # Process the command with the provided parameters
     bisect
 }
-
 
 main "$@"
