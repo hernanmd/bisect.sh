@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+#set -x
 # Fail fast and be aware of exit codes
 set -eo pipefail
 
