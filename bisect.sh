@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#set -x
+set -x
 # Fail fast and be aware of exit codes
 set -eo pipefail
 
@@ -157,7 +157,6 @@ main () {
     local OPTIND opt
     local long_opts="h,i:,p:,v"
     local image=""
-    local vmpath=""
 
     # Set a flag to track if the image parameter was provided
     local image_provided=0
@@ -173,7 +172,7 @@ main () {
                 image_provided=1
                 ;;
             p|vmpath)
-                vmpath="$OPTARG"
+                pharo_vm_file="$OPTARG"
                 ;;
 			v|version)
 				show_version
@@ -194,16 +193,16 @@ main () {
         die "Error: Image parameter is mandatory"
     fi
 
-    # Lazy initialization of vmpath to "pharo" if not set
-    if [ -z "$vmpath" ]; then
-        vmpath="pharo"
-    fi
-
 	# Set global variables
 	pharo_image_directory=$(dirname "$image")
 	pharo_image_name=$(basename "$image")
 	pharo_image_file="$pharo_image_directory"/"$pharo_image_name"
-	pharo_vm_file="$pharo_image_directory/$vmpath"
+
+    # Lazy initialization of vmpath to "pharo" in the image directory if not set
+    if [ -z "$vmpath" ]; then
+		pharo_vm_file="$pharo_image_directory/pharo"
+    fi
+
 	# JENKINS_HOME
 	combined_xml_file_name="junit-$pharo_image_name-$current_datetime.xml"
 
